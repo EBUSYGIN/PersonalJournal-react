@@ -1,9 +1,7 @@
 import './JournalItem.css';
 
-
-function JournalItem({title, date, text}) {
+function JournalItem({ title, date, text }) {
   const formatedData = new Intl.DateTimeFormat('ru-RU').format(date);
-
 
   return (
     <>
@@ -13,8 +11,7 @@ function JournalItem({title, date, text}) {
         <div className='journal-item__text'>{text}</div>
       </div>
     </>
-  )
+  );
 }
-
 
 export default JournalItem;
