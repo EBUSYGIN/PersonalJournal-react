@@ -1,22 +1,22 @@
 import React from 'react';
 import './App.css';
 import LeftPanel from './Layouts/LeftPanel/LeftPanel';
-import CardButton from './Components/CardButton/CardButton';
-import JournalItem from './Components/JournalItem/JournalItem';
 import AddCardButton from './Components/AddCardButton/AddCardButton';
 import Body from './Layouts/Body/Body';
-import JournalList from './Layouts/JournalList/JournalList';
+import JournalList from './Components/JournalList/JournalList';
 import Header from './Components/Header/Header';
 import JournalForm from './Components/JournalForm/JournalForm';
 import { useState } from 'react';
 
 const DATA = [
   {
+    id: 2,
     title: 'Подготовка к обновлению курсов',
     date: new Date(),
     text: 'Думал, что очень много времени',
   },
   {
+    id: 1,
     title: 'Поход в годы',
     date: new Date(),
     text: 'Горные походы открывают удивительные природные ландшафты, испытывают туристов физически и морально, дают возможность почувствовать себя первопроходцем.',
@@ -31,9 +31,10 @@ function App() {
       ...oldItems,
       {
         text: item.text,
-        date: item.date,
+        date: new Date(item.date),
         tag: item.tag,
         title: item.title,
+        id: Math.max(...oldItems.map((el) => el.id)) + 1,
       },
     ]);
   };
@@ -43,17 +44,7 @@ function App() {
       <LeftPanel>
         <Header />
         <AddCardButton />
-        <JournalList>
-          {items.map((item) => (
-            <CardButton>
-              <JournalItem
-                title={item.title}
-                date={item.date}
-                text={item.text}
-              />
-            </CardButton>
-          ))}
-        </JournalList>
+        <JournalList items={items} />
       </LeftPanel>
       <Body>
         <JournalForm addItem={addItem} />
