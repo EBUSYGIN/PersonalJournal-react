@@ -1,41 +1,36 @@
-import { useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import Button from '../Button/Button';
 import styles from './JournalForm.module.css';
 import cn from 'classnames';
+import { formReducer, INITIAL_STATE } from './JournalForm.state';
 
 function JournalForm({ addItem }) {
-  const [isFormValid, setFormValid] = useState({
-    title: true,
-    date: true,
-    text: true,
-    tag: true
-  });
+  const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
+  const { isValid, values, submit } = formState;
+
+  useEffect(() => {
+    let timeoutId;
+    if (!isValid.title || !isValid.date || !isValid.text || !isValid.tag) {
+      timeoutId = setTimeout(() => {
+        dispatchForm({ type: 'RESET_VALIDITY' });
+      }, 2000);
+    }
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isValid]);
+
+  useEffect(() => {
+    if (submit) {
+      addItem(values);
+    }
+  }, [submit]);
 
   const addJournalItem = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const formProps = Object.fromEntries(formData);
-    if (
-      !formProps.title?.trim().length ||
-      !formProps.date ||
-      !formProps.text?.trim().length ||
-      !formProps.tag?.trim().length
-    ) {
-      setFormValid({
-        title: Boolean(formProps.title?.trim().length),
-        date: Boolean(formProps.date),
-        text: Boolean(formProps.text?.trim().length),
-        tag: Boolean(formProps.tag?.trim().length)
-      });
-    } else {
-      setFormValid({
-        title: Boolean(formProps.title?.trim().length),
-        date: Boolean(formProps.date),
-        text: Boolean(formProps.text?.trim().length),
-        tag: Boolean(formProps.tag?.trim().length)
-      });
-      addItem(formProps);
-    }
+    dispatchForm({ type: 'SUBMIT', payload: formProps });
   };
 
   return (
@@ -45,7 +40,7 @@ function JournalForm({ addItem }) {
           type='text'
           name='title'
           className={cn(styles['input-title'], {
-            [styles.invalid]: !isFormValid.title
+            [styles.invalid]: !isValid.title
           })}
         />
       </div>
@@ -59,7 +54,7 @@ function JournalForm({ addItem }) {
           type='date'
           name='date'
           className={cn(styles.input, {
-            [styles.invalid]: !isFormValid.date
+            [styles.invalid]: !isValid.date
           })}
         />
       </div>
@@ -74,7 +69,7 @@ function JournalForm({ addItem }) {
           name='tag'
           id='tag'
           className={cn(styles.input, {
-            [styles.invalid]: !isFormValid.tag
+            [styles.invalid]: !isValid.tag
           })}
         />
       </div>
@@ -85,7 +80,7 @@ function JournalForm({ addItem }) {
         cols='30'
         rows='10'
         className={cn(styles.input, {
-          [styles.invalid]: !isFormValid.text
+          [styles.invalid]: !isValid.text
         })}
       />
       <Button text={'Сохранить'} />
