@@ -5,25 +5,38 @@ import Body from './Layouts/Body/Body';
 import JournalList from './Components/JournalList/JournalList';
 import Header from './Components/Header/Header';
 import JournalForm from './Components/JournalForm/JournalForm';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const DATA = [
-  {
-    id: 2,
-    title: 'Подготовка к обновлению курсов',
-    date: new Date(),
-    text: 'Думал, что очень много времени'
-  },
-  {
-    id: 1,
-    title: 'Поход в годы',
-    date: new Date(),
-    text: 'Горные походы открывают удивительные природные ландшафты, испытывают туристов физически и морально, дают возможность почувствовать себя первопроходцем.'
-  }
-];
+// const DATA = [
+//   // {
+//   //   id: 2,
+//   //   title: 'Подготовка к обновлению курсов',
+//   //   date: new Date(),
+//   //   text: 'Думал, что очень много времени'
+//   // },
+//   // {
+//   //   id: 1,
+//   //   title: 'Поход в годы',
+//   //   date: new Date(),
+//   //   text: 'Горные походы открывают удивительные природные ландшафты, испытывают туристов физически и морально, дают возможность почувствовать себя первопроходцем.'
+//   // }
+// ];
 
 function App() {
-  const [items, setItem] = useState(DATA);
+  const [items, setItem] = useState([]);
+
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem('data'));
+    if (data) {
+      console.log(data);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (items.length) {
+      localStorage.setItem('data', JSON.stringify(items));
+    }
+  }, [items]);
 
   const addItem = (item) => {
     setItem((oldItems) => [
