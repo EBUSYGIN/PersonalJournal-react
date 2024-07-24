@@ -23,6 +23,7 @@ function JournalForm({ addItem }) {
   useEffect(() => {
     if (submit) {
       addItem(values);
+      dispatchForm({ type: 'CLEAR' });
     }
   }, [submit]);
 
@@ -33,10 +34,20 @@ function JournalForm({ addItem }) {
     dispatchForm({ type: 'SUBMIT', payload: formProps });
   };
 
+  const onChange = (event) => {
+    dispatchForm({
+      type: 'SET_INPUT',
+      payload: { [event.target.name]: [event.target.value] }
+    });
+    // console.log(e.target.name);
+  };
+
   return (
     <form className={styles['journal-form']} onSubmit={addJournalItem}>
       <div>
         <input
+          onChange={onChange}
+          value={values.title}
           type='text'
           name='title'
           className={cn(styles['input-title'], {
@@ -50,6 +61,8 @@ function JournalForm({ addItem }) {
           <span>Дата</span>
         </label>
         <input
+          value={values.date}
+          onChange={onChange}
           id='date'
           type='date'
           name='date'
@@ -65,6 +78,8 @@ function JournalForm({ addItem }) {
           <span>Метки</span>
         </label>
         <input
+          value={values.tag}
+          onChange={onChange}
           type='text'
           name='tag'
           id='tag'
@@ -75,6 +90,8 @@ function JournalForm({ addItem }) {
       </div>
 
       <textarea
+        value={values.text}
+        onChange={onChange}
         name='text'
         id=''
         cols='30'
