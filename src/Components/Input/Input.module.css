@@ -1,0 +1,26 @@
+.input {
+  border: none;
+  background: none;
+  font-weight: 600;
+  font-size: 14px;
+  color: #fff;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+}
+
+.input-title {
+  border: none;
+  background: none;
+  font-weight: 600;
+  font-size: 32px;
+  color: #fff;
+  width: 100%;
+}
+
+.invalid {
+  border: 1px solid red;
+  background: rgb(101, 19, 19);
+}
