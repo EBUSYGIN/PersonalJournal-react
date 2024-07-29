@@ -5,7 +5,8 @@ import Body from './Layouts/Body/Body';
 import JournalList from './Components/JournalList/JournalList';
 import Header from './Components/Header/Header';
 import JournalForm from './Components/JournalForm/JournalForm';
-import { useEffect, useState } from 'react';
+import { useLocalStorage } from './Hooks/useLocalStorage.hook';
+import { mapItems } from './utils/mapItems.js';
 
 // const DATA = [
 //   // {
@@ -23,31 +24,17 @@ import { useEffect, useState } from 'react';
 // ];
 
 function App() {
-  const [items, setItem] = useState([]);
-
-  useEffect(() => {
-    const data = JSON.parse(localStorage.getItem('data'));
-    if (data) {
-      console.log(data);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (items.length) {
-      localStorage.setItem('data', JSON.stringify(items));
-    }
-  }, [items]);
+  const [items, setItem] = useLocalStorage('data', []);
 
   const addItem = (item) => {
-    setItem((oldItems) => [
-      ...oldItems,
+    setItem([
+      ...mapItems(items),
       {
         text: item.text,
         date: new Date(item.date),
         tag: item.tag,
         title: item.title,
-        id:
-          oldItems.length > 0 ? Math.max(...oldItems.map((el) => el.id)) + 1 : 1
+        id: items.length > 0 ? Math.max(...items.map((el) => el.id)) + 1 : 1
       }
     ]);
   };
@@ -57,7 +44,7 @@ function App() {
       <LeftPanel>
         <Header />
         <AddCardButton />
-        <JournalList items={items} />
+        <JournalList items={mapItems(items)} />
       </LeftPanel>
       <Body>
         <JournalForm addItem={addItem} />
