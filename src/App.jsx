@@ -7,6 +7,8 @@ import Header from './Components/Header/Header';
 import JournalForm from './Components/JournalForm/JournalForm';
 import { useLocalStorage } from './Hooks/useLocalStorage.hook';
 import { mapItems } from './utils/mapItems.js';
+import { SelectUser } from './Components/SelectUser/SelectUser.jsx';
+import { UserContextProvider } from './context/user.context.jsx';
 
 // const DATA = [
 //   // {
@@ -34,22 +36,26 @@ function App() {
         date: new Date(item.date),
         tag: item.tag,
         title: item.title,
-        id: items.length > 0 ? Math.max(...items.map((el) => el.id)) + 1 : 1
+        id: items.length > 0 ? Math.max(...items.map((el) => el.id)) + 1 : 1,
+        userId: item.userId
       }
     ]);
   };
 
   return (
-    <div className='app'>
-      <LeftPanel>
-        <Header />
-        <AddCardButton />
-        <JournalList items={mapItems(items)} />
-      </LeftPanel>
-      <Body>
-        <JournalForm addItem={addItem} />
-      </Body>
-    </div>
+    <UserContextProvider>
+      <div className='app'>
+        <LeftPanel>
+          <Header />
+          <SelectUser></SelectUser>
+          <AddCardButton />
+          <JournalList items={mapItems(items)} />
+        </LeftPanel>
+        <Body>
+          <JournalForm addItem={addItem} />
+        </Body>
+      </div>
+    </UserContextProvider>
   );
 }
 
