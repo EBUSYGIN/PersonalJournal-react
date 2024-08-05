@@ -9,7 +9,8 @@ export const INITIAL_STATE = {
     text: '',
     tag: '',
     date: '',
-    title: ''
+    title: '',
+    userId: ''
   },
   submit: false
 };
@@ -28,7 +29,7 @@ export function formReducer(state, action) {
       const dateValidity = state.values.date;
       const tagValidity = state.values.tag?.trim().length;
       return {
-        ...state,
+        values: action.payload,
         isValid: {
           text: textValidity,
           date: dateValidity,
