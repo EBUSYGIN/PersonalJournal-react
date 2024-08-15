@@ -9,6 +9,7 @@ import { useLocalStorage } from './Hooks/useLocalStorage.hook';
 import { mapItems } from './utils/mapItems.js';
 import { SelectUser } from './Components/SelectUser/SelectUser.jsx';
 import { UserContextProvider } from './context/user.context.jsx';
+import { useState } from 'react';
 
 // const DATA = [
 //   // {
@@ -27,19 +28,33 @@ import { UserContextProvider } from './context/user.context.jsx';
 
 function App() {
   const [items, setItem] = useLocalStorage('data', []);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const addItem = (item) => {
-    setItem([
-      ...mapItems(items),
-      {
-        text: item.text,
-        date: new Date(item.date),
-        tag: item.tag,
-        title: item.title,
-        id: items.length > 0 ? Math.max(...items.map((el) => el.id)) + 1 : 1,
-        userId: item.userId
-      }
-    ]);
+    if (!item.id) {
+      setItem([
+        ...mapItems(items),
+        {
+          text: item.text,
+          date: new Date(item.date),
+          tag: item.tag,
+          title: item.title,
+          id: items.length > 0 ? Math.max(...items.map((el) => el.id)) + 1 : 1,
+          userId: item.userId
+        }
+      ]);
+    } else {
+      setItem([
+        ...mapItems(items).map((i) => {
+          if (i.id === item.id) {
+            return {
+              ...item
+            };
+          }
+          return i;
+        })
+      ]);
+    }
   };
 
   return (
@@ -49,10 +64,13 @@ function App() {
           <Header />
           <SelectUser></SelectUser>
           <AddCardButton />
-          <JournalList items={mapItems(items)} />
+          <JournalList
+            items={mapItems(items)}
+            setSelectedItem={setSelectedItem}
+          />
         </LeftPanel>
         <Body>
-          <JournalForm addItem={addItem} />
+          <JournalForm addItem={addItem} selectedItem={selectedItem} />
         </Body>
       </div>
     </UserContextProvider>

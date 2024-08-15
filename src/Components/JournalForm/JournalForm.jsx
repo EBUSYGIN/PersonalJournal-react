@@ -6,7 +6,7 @@ import { formReducer, INITIAL_STATE } from './JournalForm.state';
 import Input from '../Input/Input';
 import { UserContext } from '../../context/user.context';
 
-function JournalForm({ addItem }) {
+function JournalForm({ addItem, selectedItem }) {
   const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
   const { isValid, values, submit } = formState;
   const { userId } = useContext(UserContext);
@@ -34,6 +34,14 @@ function JournalForm({ addItem }) {
   };
 
   useEffect(() => {
+    dispatchForm({ type: 'SET_INPUT', payload: { ...selectedItem } });
+  }, [selectedItem]);
+
+  useEffect(() => {
+    dispatchForm({ type: 'SET_INPUT', payload: { userId } });
+  }, [userId]);
+
+  useEffect(() => {
     let timeoutId;
     if (!isValid.title || !isValid.date || !isValid.text || !isValid.tag) {
       focus(isValid);
@@ -50,15 +58,13 @@ function JournalForm({ addItem }) {
     if (submit) {
       addItem(values);
       dispatchForm({ type: 'CLEAR' });
+      dispatchForm({ type: 'SET_INPUT', payload: { userId } });
     }
-  }, [submit, addItem, values]);
+  }, [submit, addItem, values, userId]);
 
   const addJournalItem = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const formProps = Object.fromEntries(formData);
-    formProps.userId = userId;
-    dispatchForm({ type: 'SUBMIT', payload: formProps });
+    dispatchForm({ type: 'SUBMIT' });
   };
 
   const onChange = (event) => {
@@ -66,10 +72,6 @@ function JournalForm({ addItem }) {
       type: 'SET_INPUT',
       payload: { [event.target.name]: event.target.value }
     });
-  };
-
-  const remove = () => {
-    dispatchForm({ type: 'CLEAR' });
   };
 
   return (
@@ -85,7 +87,7 @@ function JournalForm({ addItem }) {
           appereance='title'
           isValid={isValid.title}
         />
-        <button onClick={remove} className={styles['delete-container']}>
+        <button className={styles['delete-container']}>
           <img src='./delete.svg' alt='Иконка удаления' />
         </button>
       </div>
@@ -96,7 +98,9 @@ function JournalForm({ addItem }) {
         </label>
         <Input
           ref={dateRef}
-          value={values.date}
+          value={
+            values.date ? new Date(values.date).toISOString().slice(0, 10) : ''
+          }
           onChange={onChange}
           id='date'
           type='date'
