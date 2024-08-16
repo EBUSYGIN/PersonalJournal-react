@@ -6,7 +6,7 @@ import { formReducer, INITIAL_STATE } from './JournalForm.state';
 import Input from '../Input/Input';
 import { UserContext } from '../../context/user.context';
 
-function JournalForm({ addItem, selectedItem }) {
+function JournalForm({ addItem, selectedItem, deleteItem, setSelectedItem }) {
   const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
   const { isValid, values, submit } = formState;
   const { userId } = useContext(UserContext);
@@ -56,9 +56,9 @@ function JournalForm({ addItem, selectedItem }) {
 
   useEffect(() => {
     if (submit) {
+      values.userId = userId;
       addItem(values);
       dispatchForm({ type: 'CLEAR' });
-      dispatchForm({ type: 'SET_INPUT', payload: { userId } });
     }
   }, [submit, addItem, values, userId]);
 
@@ -74,10 +74,15 @@ function JournalForm({ addItem, selectedItem }) {
     });
   };
 
+  const clearAll = () => {
+    deleteItem(values.id);
+    dispatchForm({ type: 'CLEAR' });
+    setSelectedItem(null);
+  };
+
   return (
     <form className={styles['journal-form']} onSubmit={addJournalItem}>
       <div className={styles['input-container']}>
-        <div>{userId}</div>
         <Input
           ref={titleRef}
           onChange={onChange}
@@ -87,7 +92,11 @@ function JournalForm({ addItem, selectedItem }) {
           appereance='title'
           isValid={isValid.title}
         />
-        <button className={styles['delete-container']}>
+        <button
+          className={styles['delete-button']}
+          type='button'
+          onClick={clearAll}
+        >
           <img src='./delete.svg' alt='Иконка удаления' />
         </button>
       </div>

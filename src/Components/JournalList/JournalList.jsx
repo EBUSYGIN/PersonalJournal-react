@@ -2,7 +2,7 @@ import './JournalList.css';
 import CardButton from '../CardButton/CardButton';
 import JournalItem from '../JournalItem/JournalItem';
 import { UserContext } from '../../context/user.context';
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 
 function JournalList({ items, setSelectedItem }) {
   // return <div className='journal-list'>{children}</div>;
@@ -15,28 +15,26 @@ function JournalList({ items, setSelectedItem }) {
     }
   };
 
+  const filteredItems = useMemo(
+    () => items.filter((i) => i.userId === userId).sort(sortItems),
+    [items, userId]
+  );
+
   if (items.length === 0) {
     return <div>Записей нет, добавьте новую</div>;
   } else {
     return (
       <div className='journal-list'>
-        {items
-          .filter((i) => i.userId === userId)
-          .sort(sortItems)
-          .map((item) => (
-            <CardButton
-              key={item.id}
-              onClick={() => {
-                setSelectedItem(item);
-              }}
-            >
-              <JournalItem
-                title={item.title}
-                date={item.date}
-                text={item.text}
-              />
-            </CardButton>
-          ))}
+        {filteredItems.map((item) => (
+          <CardButton
+            key={item.id}
+            onClick={() => {
+              setSelectedItem(item);
+            }}
+          >
+            <JournalItem title={item.title} date={item.date} text={item.text} />
+          </CardButton>
+        ))}
       </div>
     );
   }

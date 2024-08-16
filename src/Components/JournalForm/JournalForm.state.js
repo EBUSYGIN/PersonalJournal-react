@@ -9,8 +9,7 @@ export const INITIAL_STATE = {
     text: '',
     tag: '',
     date: '',
-    title: '',
-    userId: ''
+    title: ''
   },
   submit: false
 };
