@@ -3,7 +3,7 @@
   flex-direction: column;
   width: 400px;
   align-items: center;
-  gap: 30px;
+  gap: 20px;
 }
 
 .label {
@@ -13,6 +13,7 @@
   font-weight: 400;
   font-size: 17px;
   color: #c4c4c4;
+  width: 100%;
 }
 
 .input {
@@ -22,14 +23,14 @@
 }
 
 .errors {
-  height: 40px;
+  height: 20px;
 }
 
 .button {
   border: none;
   background-color: black;
   padding: 16px 19px;
-  width: 150px;
+  min-width: 150px;
   border-radius: 28px;
   font-weight: 600;
   font-size: 15px;
@@ -38,6 +39,11 @@
   text-align: center;
   color: #fff;
   cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+.button:hover {
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 .link {

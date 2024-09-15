@@ -5,7 +5,7 @@ export function RequireAuth({ children }) {
   const jwt = useSelector((s) => s.user.jwt);
 
   if (!jwt) {
-    return <Navigate to='/auth/login' replace />;
+    return <Navigate to='/auth/login' replace={true} />;
   }
   return children;
 }

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const initialState = {
   jwt: null
@@ -7,7 +7,7 @@ const initialState = {
 
 export const login = createAsyncThunk('user/login', async (params) => {
   try {
-    const data = await axios.post(
+    const { data } = await axios.post(
       'https://purpleschool.ru/pizza-api-demo/auth/login',
       {
         email: params.email,
@@ -20,6 +20,27 @@ export const login = createAsyncThunk('user/login', async (params) => {
   }
 });
 
+export const registerUser = createAsyncThunk(
+  'user/registerUser',
+  async (params) => {
+    try {
+      const { data } = await axios.post(
+        'https://purpleschool.ru/pizza-api-demo/auth/register',
+        {
+          email: params.email,
+          password: params.password,
+          name: params.name
+        }
+      );
+      return data;
+    } catch (e) {
+      if (AxiosError) {
+        throw new Error(e.response.data.message);
+      }
+    }
+  }
+);
+
 export const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -30,7 +51,10 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action) => {
-      state.jwt = action.payload.data.access_token;
+      state.jwt = action.payload.access_token;
+    });
+    builder.addCase(registerUser.fulfilled, (state, action) => {
+      state.jwt = action.payload.access_token;
     });
   }
 });

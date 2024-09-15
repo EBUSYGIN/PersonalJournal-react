@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, userAction } from '../Redux/user.slice';
+import { login, userAction } from '../../Redux/user.slice';
 
 function LoginForm() {
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ function LoginForm() {
     formState: { errors }
   } = useForm({ reValidateMode: 'onSubmit' });
 
-  const submit = async (data) => {
+  const submit = (data) => {
     dispatch(userAction.removeJwt());
     dispatch(login(data));
   };
