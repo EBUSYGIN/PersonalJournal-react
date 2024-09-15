@@ -1,0 +1,24 @@
+.page {
+  display: flex;
+  height: 100vh;
+}
+
+.imageContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image {
+  width: 300px;
+}
+
+.formContainer {
+  flex: 1;
+  border-left: 1px solid #929295;
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
