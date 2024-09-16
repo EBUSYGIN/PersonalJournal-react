@@ -4,11 +4,16 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { registerUser } from '../../Redux/user.slice';
+import { emailValidation } from '../../utils/emailValidation';
 
 function RegisterForm() {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({ reValidateMode: 'onSubmit' });
   const dispatch = useDispatch();
-  const jwt = useSelector((s) => s.user.jwt);
+  const { jwt, registerState } = useSelector((s) => s.user);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,7 +32,10 @@ function RegisterForm() {
         <input
           className={styles.input}
           placeholder='Ваш email'
-          {...register('email', { required: true })}
+          {...register('email', {
+            required: 'Поле обязательно для заполнения',
+            validate: emailValidation
+          })}
         />
       </label>
       <label className={styles.label}>
@@ -35,7 +43,9 @@ function RegisterForm() {
         <input
           className={styles.input}
           placeholder='Ваш пароль'
-          {...register('password', { required: true })}
+          {...register('password', {
+            required: 'Поле обязательно для заполнения'
+          })}
         />
       </label>
       <label className={styles.label}>
@@ -43,10 +53,20 @@ function RegisterForm() {
         <input
           className={styles.input}
           placeholder='Ваше имя'
-          {...register('name', { required: true })}
+          {...register('name', { required: 'Поле обязательно для заполнения' })}
         />
       </label>
-      <div className={styles.errors}></div>
+      <div className={styles.errors}>
+        {errors.email
+          ? errors.email.message
+          : errors.password
+          ? errors.password.message
+          : errors.name
+          ? errors.name.message
+          : registerState
+          ? registerState
+          : ''}
+      </div>
       <button className={styles.button}>Зарегистрироваться</button>
       <div className={styles.link}>
         <div>Есть аккаунт?</div>
