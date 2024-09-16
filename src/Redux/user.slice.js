@@ -2,7 +2,9 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
 
 const initialState = {
-  jwt: null
+  jwt: null,
+  loginState: null,
+  registerState: null
 };
 
 export const login = createAsyncThunk('user/login', async (params) => {
@@ -53,8 +55,14 @@ export const userSlice = createSlice({
     builder.addCase(login.fulfilled, (state, action) => {
       state.jwt = action.payload.access_token;
     });
+    builder.addCase(login.rejected, (state, action) => {
+      state.loginState = action.error.message;
+    });
     builder.addCase(registerUser.fulfilled, (state, action) => {
       state.jwt = action.payload.access_token;
+    });
+    builder.addCase(registerUser.rejected, (state, action) => {
+      state.registerState = action.error.message;
     });
   }
 });

@@ -4,11 +4,12 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, userAction } from '../../Redux/user.slice';
+import { emailValidation } from '../../utils/emailValidation';
 
 function LoginForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const jwt = useSelector((s) => s.user.jwt);
+  const { jwt, loginState } = useSelector((s) => s.user);
 
   useEffect(() => {
     if (jwt) {
@@ -35,10 +36,7 @@ function LoginForm() {
         <input
           {...register('email', {
             required: 'Поле обязятельно к заполнению',
-            minLength: {
-              value: 5,
-              message: 'Email минимум 5 символов'
-            }
+            validate: emailValidation
           })}
           className={styles.input}
           placeholder='Ваш email'
@@ -51,7 +49,7 @@ function LoginForm() {
             required: 'Поле обязятельно к заполнению',
             minLength: {
               value: 3,
-              message: 'Пароль минимум 3 символа'
+              message: 'Минимум 3 символа'
             }
           })}
           className={styles.input}
@@ -59,8 +57,13 @@ function LoginForm() {
         />
       </label>
       <div className={styles.errors}>
-        {errors.password?.message && `${errors.password?.message}`}
-        {errors.email?.message && `${errors.email?.message}`}
+        {errors.email
+          ? errors.email.message
+          : errors.password
+          ? errors.password.message
+          : loginState
+          ? loginState
+          : ''}
       </div>
       <button className={styles.button}>Вход</button>
       <div className={styles.link}>
